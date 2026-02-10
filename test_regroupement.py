@@ -46,6 +46,23 @@ class TestSourceManager(unittest.TestCase):
         youtube_sources = self.manager.get_sources_by_type('youtube')
         self.assertEqual(len(youtube_sources), 1)
         self.assertEqual(youtube_sources[0].source_type, 'youtube')
+    
+    def test_youtube_url_security(self):
+        """Test that YouTube detection is secure against URL injection"""
+        # This should NOT be detected as YouTube
+        fake_youtube = self.manager.add_source("https://evil.com?redirect=youtube.com")
+        self.assertNotEqual(fake_youtube.source_type, 'youtube')
+        
+        # These SHOULD be detected as YouTube
+        valid_urls = [
+            "https://www.youtube.com/watch?v=test",
+            "https://youtube.com/watch?v=test",
+            "https://youtu.be/test",
+            "https://m.youtube.com/watch?v=test"
+        ]
+        for url in valid_urls:
+            source = Source(url)
+            self.assertEqual(source.source_type, 'youtube', f"Failed for {url}")
 
 
 class TestYouTubeProcessor(unittest.TestCase):

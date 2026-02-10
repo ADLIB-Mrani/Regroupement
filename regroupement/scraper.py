@@ -9,6 +9,9 @@ from typing import Optional, Dict, Any
 class ContentScraper:
     """Scrapes content from web pages"""
     
+    # Maximum content length to prevent memory issues and improve processing speed
+    MAX_CONTENT_LENGTH = 5000
+    
     def __init__(self, timeout: int = 10):
         self.timeout = timeout
         self.headers = {
@@ -41,7 +44,7 @@ class ContentScraper:
             return {
                 'url': url,
                 'title': title,
-                'content': text[:5000],  # Limit content length
+                'content': text[:self.MAX_CONTENT_LENGTH],
                 'success': True,
                 'error': None
             }

@@ -9,6 +9,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 class YouTubeProcessor:
     """Processes YouTube videos to extract transcripts and metadata"""
     
+    # Maximum transcript length to prevent memory issues
+    MAX_TRANSCRIPT_LENGTH = 10000
+    
     @staticmethod
     def extract_video_id(url: str) -> Optional[str]:
         """Extract video ID from YouTube URL"""
@@ -47,7 +50,7 @@ class YouTubeProcessor:
             return {
                 'url': url,
                 'video_id': video_id,
-                'transcript': full_transcript[:10000],  # Limit length
+                'transcript': full_transcript[:self.MAX_TRANSCRIPT_LENGTH],
                 'success': True,
                 'error': None
             }

@@ -8,6 +8,10 @@ from typing import List, Dict, Any, Optional
 class AIOrchestrator:
     """Orchestrates AI-powered analysis and planning"""
     
+    # Constants for content processing
+    PREVIEW_LENGTH = 500  # Length of content preview in source summary
+    MAX_SUMMARY_LENGTH = 1000  # Maximum length of sources summary to display
+    
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('OPENAI_API_KEY')
         self.has_ai = bool(self.api_key)
@@ -40,8 +44,8 @@ class AIOrchestrator:
                 title = source.get('title', 'Unknown')
                 url = source.get('url', '')
                 
-                # Take first 500 chars of content
-                preview = content[:500] if content else "No content"
+                # Take first PREVIEW_LENGTH chars of content
+                preview = content[:self.PREVIEW_LENGTH] if content else "No content"
                 summary_parts.append(f"Source {idx} ({url}):\nTitle: {title}\nPreview: {preview}...\n")
         
         return "\n".join(summary_parts)
@@ -132,7 +136,7 @@ This plan is based on {sources_count} source(s) provided.
 
 ## Resources
 The following sources were analyzed:
-{sources_summary[:1000]}
+{sources_summary[:self.MAX_SUMMARY_LENGTH]}
 
 ## Next Steps
 1. Review this plan

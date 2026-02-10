@@ -16,15 +16,22 @@ class Source:
         
     def _detect_type(self, url: str) -> str:
         """Detect the type of source from URL"""
-        if 'youtube.com' in url or 'youtu.be' in url:
-            return 'youtube'
-        elif url.endswith('.pdf'):
-            return 'pdf'
-        elif url.endswith(('.md', '.txt')):
-            return 'text'
-        elif url.startswith('http'):
-            return 'web'
-        else:
+        try:
+            parsed = urlparse(url)
+            hostname = parsed.hostname or ''
+            
+            # Check hostname properly to avoid URL injection
+            if hostname in ['www.youtube.com', 'youtube.com', 'm.youtube.com'] or hostname == 'youtu.be':
+                return 'youtube'
+            elif url.endswith('.pdf'):
+                return 'pdf'
+            elif url.endswith(('.md', '.txt')):
+                return 'text'
+            elif url.startswith('http'):
+                return 'web'
+            else:
+                return 'unknown'
+        except Exception:
             return 'unknown'
     
     def __repr__(self):
